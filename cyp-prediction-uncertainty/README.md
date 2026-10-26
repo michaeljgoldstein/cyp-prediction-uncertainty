@@ -1,0 +1,91 @@
+# CYP Prediction Uncertainty
+
+**A reproducible Google Colab project for studying uncertainty and chemical-series generalization in CYP inhibition prediction.**
+
+This project asks whether simple uncertainty signals—ensemble disagreement, nearest-training-compound similarity, and experimental confidence-interval width—help identify unreliable direct-inhibition predictions across CYP1A2, CYP2C9, CYP2D6, and CYP3A4.
+
+It is an exploratory benchmark, not a claim of state-of-the-art performance or a validated clinical prediction system.
+
+## Start in Google Colab
+
+1. Upload this repository to your own GitHub account (or open the ZIP and upload the folder contents).
+2. Open [`notebooks/01_cyp_uncertainty_study.ipynb`](notebooks/01_cyp_uncertainty_study.ipynb) in GitHub.
+3. Click **Open in Colab**, or use this URL after replacing `YOUR_GITHUB_USERNAME` with your GitHub username:
+
+   `https://colab.research.google.com/github/YOUR_GITHUB_USERNAME/cyp-prediction-uncertainty/blob/main/notebooks/01_cyp_uncertainty_study.ipynb`
+
+4. Select **Runtime → Run all**. The notebook installs dependencies, downloads the public training CSV from Hugging Face, runs a reproducible baseline, and writes tables/plots under `results/`.
+
+No Google Drive mount or API token should be necessary for the public training file. The blinded test labels are not used.
+
+## Research questions
+
+1. How much does performance change between random and Bemis–Murcko scaffold-grouped validation?
+2. Does ensemble disagreement correlate with absolute prediction error?
+3. Does maximum ECFP4/Tanimoto similarity to the training set provide a useful error signal?
+4. Does combining model disagreement and chemical similarity improve risk–coverage behavior?
+5. How do these relationships vary across CYP isoforms?
+
+## Method overview
+
+- Molecular structures are parsed and featurized with RDKit Morgan fingerprints (radius 2, 2048 bits).
+- A random-forest baseline is trained independently for each isoform.
+- Ensemble members use bootstrap resampling of the training fold. Their standard deviation is used as a simple disagreement score.
+- A nearest-training-compound similarity score is calculated with Morgan fingerprints.
+- Random and scaffold-grouped validation are compared.
+- The notebook reports MAE, R², a confidence-interval-aware soft-threshold error when suitable lower/upper columns are available, and risk–coverage plots.
+
+### Important limitations
+
+- This is a compact baseline designed for reproducibility and learning, not necessarily the strongest possible model.
+- Scaffold splitting is only a proxy for chemical-series splitting and may not reproduce the challenge's exact hidden split.
+- Ensemble standard deviation is not automatically a calibrated predictive interval.
+- Confidence-interval width reflects experimental uncertainty, not just model uncertainty.
+- The soft-threshold metric in this repository is a transparent local implementation; verify against the organizers' official scoring code before reporting it as the official score.
+- Results depend on package versions and the public dataset revision. Record the run date and environment with any published results.
+- Do not tune decisions against blinded test labels. This project does not load or evaluate the blinded test set.
+
+## Repository layout
+
+```text
+cyp-prediction-uncertainty/
+├── notebooks/
+│   └── 01_cyp_uncertainty_study.ipynb
+├── src/
+│   └── cyp_uncertainty.py
+├── tests/
+│   └── test_metrics.py
+├── results/                 # generated outputs; not tracked by default
+├── requirements.txt
+├── LICENSE                  # MIT license for this project's code
+└── README.md
+```
+
+## Run locally (optional)
+
+```bash
+python -m pip install -r requirements.txt
+python -m pytest -q
+```
+
+The notebook is the primary entry point and is designed for Google Colab.
+
+## Data and attribution
+
+Data source: [OpenADMET CYP Challenge Train/Test dataset](https://huggingface.co/datasets/openadmet/cyp-challenge-train-test).
+
+Challenge tutorial: [OpenADMET/CYP-Challenge-Tutorial](https://github.com/OpenADMET/CYP-Challenge-Tutorial).
+
+Challenge announcement: [Announcing OpenADMET's CYP inhibition blind challenge](https://openadmet.ghost.io/announcing-openadmets-cyp-inhibition-blind-challenge/).
+
+Please consult the dataset card and challenge rules for current terms, attribution, and data-use requirements. The dataset card lists Apache-2.0. The MIT license in this repository applies to original project code, not to third-party data or materials.
+
+## Reproducibility checklist
+
+- [ ] Run the notebook from a fresh Colab runtime.
+- [ ] Confirm the printed target and SMILES column mappings.
+- [ ] Inspect missingness and invalid-SMILES counts.
+- [ ] Compare random and scaffold split results.
+- [ ] Verify the official metric implementation before making competition-score claims.
+- [ ] Record commit hash, run date, and dependency versions.
+- [ ] Only publish results that were generated by the committed code.
