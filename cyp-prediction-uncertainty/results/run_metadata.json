@@ -1,0 +1,41 @@
+{
+  "seed": 2026,
+  "n_bits": 2048,
+  "radius": 2,
+  "n_ensemble": 3,
+  "n_trees": 150,
+  "test_size": 0.2,
+  "python": "3.13.16",
+  "rdkit": "2026.09.1",
+  "pandas": "2.2.3",
+  "sklearn": "1.6.1",
+  "smiles_column": "SMILES",
+  "target_columns": {
+    "CYP1A2": "CYP1A2_pIC50_direct_inhibition",
+    "CYP2C9": "CYP2C9_pIC50_direct_inhibition",
+    "CYP2D6": "CYP2D6_pIC50_direct_inhibition",
+    "CYP3A4": "CYP3A4_pIC50_direct_inhibition"
+  },
+  "ci_columns": {
+    "CYP1A2": [
+      "CYP1A2_pIC50_direct_inhibition_conf_low",
+      "CYP1A2_pIC50_direct_inhibition_conf_high"
+    ],
+    "CYP2C9": [
+      "CYP2C9_pIC50_direct_inhibition_conf_low",
+      "CYP2C9_pIC50_direct_inhibition_conf_high"
+    ],
+    "CYP2D6": [
+      "CYP2D6_pIC50_direct_inhibition_conf_low",
+      "CYP2D6_pIC50_direct_inhibition_conf_high"
+    ],
+    "CYP3A4": [
+      "CYP3A4_pIC50_direct_inhibition_conf_low",
+      "CYP3A4_pIC50_direct_inhibition_conf_high"
+    ]
+  },
+  "n_input_rows": 4905,
+  "n_valid_molecules": 4905,
+  "data_url": "https://huggingface.co/datasets/openadmet/cyp-challenge-train-test/resolve/main/cyp-challenge-TRAIN_inhibition.csv",
+  "n_unique_canonical_smiles": 4905
+}
